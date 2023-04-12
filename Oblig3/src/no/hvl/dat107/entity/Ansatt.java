@@ -1,13 +1,17 @@
 package no.hvl.dat107.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,9 +28,12 @@ public class Ansatt {
 	private String stilling;
 	private int manedslonn;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "avdeling", referencedColumnName = "avdeling_id")
 	public Avdeling avdeling;
+
+	@OneToMany(mappedBy = "ansatt", cascade = CascadeType.PERSIST)
+	private List<Prosjektdeltagelse> deltagelser;
 
 	public Ansatt() {
 	}
@@ -40,6 +47,7 @@ public class Ansatt {
 		this.stilling = stilling;
 		this.manedslonn = manedslonn;
 		this.avdeling = avdeling;
+		this.deltagelser = new ArrayList<Prosjektdeltagelse>();
 	}
 
 	public Ansatt(String brukernavn, String fornavn, String etternavn, String dato, String stilling, int manedslonn,
@@ -51,6 +59,7 @@ public class Ansatt {
 		this.stilling = stilling;
 		this.manedslonn = manedslonn;
 		this.avdeling = avdeling;
+		this.deltagelser = new ArrayList<Prosjektdeltagelse>();
 	}
 
 	public int getAnsattId() {
@@ -113,9 +122,20 @@ public class Ansatt {
 		this.avdeling = avdeling;
 	}
 
+	public List<Prosjektdeltagelse> getDeltagelser() {
+		return deltagelser;
+	}
+
+	public void leggTilDeltagelse(Prosjektdeltagelse deltagelse) {
+		deltagelser.add(deltagelse);
+	}
+
+	public void setDeltagelser(List<Prosjektdeltagelse> deltagelser) {
+		this.deltagelser = deltagelser;
+	}
+
 	public boolean erSjef() {
 
-		
 		if (this.avdeling.getSjef().equals(this)) {
 			return true;
 		} else {
@@ -125,8 +145,8 @@ public class Ansatt {
 
 	@Override
 	public String toString() {
-		return "Ansatt [Id=" + ansatt_id + ", bruker=" + brukernavn + ", navn=" + fornavn + " " + etternavn
-				+ ", stilling=" + stilling + ", månedslønn=" + manedslonn + "]";
+		return "Ansatt [Id: " + ansatt_id + ", " + brukernavn + ", navn=" + fornavn + " " + etternavn
+				+ ", " + stilling + ", lønn: " + manedslonn + ", " + avdeling + "]";
 	}
 
 }

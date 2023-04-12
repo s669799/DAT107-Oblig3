@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -16,16 +17,15 @@ public class Avdeling {
 	private int avdeling_id;
 	private String avdelingsnavn;
 	
-	@OneToOne(mappedBy = "avdeling")
+	@OneToOne
+	@JoinColumn(name = "sjef", referencedColumnName = "ansatt_id")
 	private Ansatt sjef;
+	
+//	@OneToMany(mappedBy = "avdeling")
+//	private List<Ansatt> ansatte;
 	
 	public Avdeling() {
 		
-	}
-	
-	public Avdeling(String avdeling) {
-		this.avdelingsnavn = avdeling;
-		this.sjef = null;
 	}
 	
 	public Avdeling(String avdeling, Ansatt sjef) {

@@ -72,14 +72,14 @@ public class AvdelingDAO {
 		try {
 			tx.begin();
 			Ansatt sjef = em.find(Ansatt.class, ansattId);
-			if (!sjef.erSjef() && sjef != null) {
+			if (!sjef.erSjef()) {
 				Avdeling avd = new Avdeling(avdNavn, sjef);
 				sjef.setAvdeling(avd);
 				em.persist(avd);
-				em.merge(sjef);
 			}
 			tx.commit();
-
+		} catch (Exception e) {
+			tx.rollback();
 		} finally {
 			em.close();
 		}
